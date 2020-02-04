@@ -2,6 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<form>
+<div id="app">
+    <input type="text" name="url" v-model="url" />
+    <button v-on:click="sendUrl">Add</button>
 
-</form>
+    <ul>
+        <li v-for="link in links">
+            {{ link.url }} ({{link.size}})
+        </li>
+    </ul>
+</div>
+
+
+
+
+@section scripts{
+    <script src="~/lib/vue/vue.js"></script>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                url: "https://google.com",
+                links: []
+            },
+            methods: {
+                sendUrl: function () {
+                    var vm = this;
+
+                    var model = {
+                        url: vm.url
+                    }
+
+                    $.ajax({ url: "/api/shot", data: model, method: "POST" })
+                        .done(function (pageSize) {
+                            var newLink = {
+                                url: model.url,
+                                size: pageSize
+                            };
+
+                            vm.links.splice(0, 0, newLink);
+
+
+                            //toastr.success("Bug updated.");
+                        }).fail(function () {
+                            // toastr.error("Can not update this bug.");
+                        }).always(function () {
+                            // vm.clearData();
+                        });
+                }
+            }
+        });
+    </script>
+}
