@@ -2,16 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div id="app">
-    <input type="text" name="url" v-model="url" />
-    <button v-on:click="sendUrl">Add</button>
+    <div id="app">
+        <input type="text" name="url" v-model="url" />
+        <button v-on:click="sendUrl">Add</button>
+        <button v-on:click="sendText('https://microsoft.com')">Microsoft</button>
+        <button v-on:click="sendText('https://amazon.com')">Amazon</button>
+        <button v-on:click="sendText('https://google.com')">Google</button>
 
-    <ul>
-        <li v-for="link in links">
-            {{ link.url }} ({{link.size}})
-        </li>
-    </ul>
-</div>
+        <ul>
+            <li v-for="link in links">
+                {{ link.url }} ({{link.size}})
+            </li>
+        </ul>
+    </div>
 
 
 
@@ -27,6 +30,10 @@
                 links: []
             },
             methods: {
+                sendText: function (url) {
+                    this.url = url;
+                    this.sendUrl();
+                },
                 sendUrl: function () {
                     var vm = this;
 

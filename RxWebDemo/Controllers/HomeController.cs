@@ -30,10 +30,16 @@ namespace RxWebDemo.Controllers
         [Route("api/shot")]
         public async Task<IActionResult> ScreenShot(string url, [FromServices] IWebHostEnvironment env)
         {
+            _logger.LogInformation(url);
             var client = new HttpClient();
 
             var page=await client.GetAsync(url);
-            var pageSize = page.Content.Headers.ContentLength;           
+            var pageSize = page.Content.Headers.ContentLength;
+
+            if (url.Contains("google")) 
+            {
+                await Task.Delay(10000);
+            }
 
             return Ok(pageSize);
         }
