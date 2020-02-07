@@ -2,25 +2,27 @@
     ViewData["Title"] = "Home Page";
 }
 
-    <div id="app">
-        <input type="text" name="url" v-model="url" />
-        <button v-on:click="sendUrl">Add</button>
-        <button v-on:click="sendText('https://microsoft.com')">Microsoft</button>
-        <button v-on:click="sendText('https://amazon.com')">Amazon</button>
-        <button v-on:click="sendText('https://google.com')">Google</button>
+<div id="app">
+    <input type="text" name="url" v-model="url" />
+    <button v-on:click="sendUrl">Add</button>
+    <button v-on:click="sendText('https://microsoft.com')">Microsoft</button>
+    <button v-on:click="sendText('https://amazon.com')">Amazon</button>
+    <button v-on:click="sendText('https://google.com')">Google</button>
 
-        <ul>
-            <li v-for="link in links">
-                {{ link.url }} ({{link.size}})
-            </li>
-        </ul>
-    </div>
+    <ul>
+        <li v-for="link in links">
+            {{ link.url }} ({{link.size}})
+        </li>
+    </ul>
+</div>
 
 
 
 
 @section scripts{
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
     <script src="~/lib/vue/vue.js"></script>
+    <script src="~/lib/lodash/lodash.js"></script>
 
     <script>
         var app = new Vue({
@@ -28,6 +30,31 @@
             data: {
                 url: "https://google.com",
                 links: []
+            },
+            
+            mounted: function () {
+                var vm = this;
+
+                vm.connection = new signalR.HubConnectionBuilder()
+                    .withUrl('/notifyhubHub')
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                vm.connection.start()
+                    .catch(function (err) {
+                        return console.error(err.toSting());
+                    });
+
+                vm.connection.on('updateUrl', function (index, size) {
+                    vm.links[index].size = size;
+                    //var fileIndex = _.findIndex(vm.fileList, function (o) { return o.name == fileName; });
+                    //if (fileIndex >= 0) {
+                    //    vm.fileList[fileIndex].progress = progress;
+                    //} else {
+                    //    console.log("Not found : " + fileName);
+                    //}
+
+                });
             },
             methods: {
                 sendText: function (url) {

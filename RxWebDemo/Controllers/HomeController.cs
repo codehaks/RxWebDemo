@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,22 +29,31 @@ namespace RxWebDemo.Controllers
         }
 
         [HttpPost]
-        [Route("api/shot")]
-        public async Task<IActionResult> ScreenShot(string url, [FromServices] IWebHostEnvironment env)
+        [Route("api/check")]
+        public async Task<IActionResult> Check(string url, [FromServices] IWebHostEnvironment env)
         {
             _logger.LogInformation(url);
-            var client = new HttpClient();
 
-            var page=await client.GetAsync(url);
-            var pageSize = page.Content.Headers.ContentLength;
+          
 
             if (url.Contains("google")) 
             {
                 await Task.Delay(10000);
             }
 
-            return Ok(pageSize);
+            return Ok();
         }
+
+        //public static async IObservable<long> GetPageSize(string url)
+        //{
+        //    var client = new HttpClient();
+            
+            
+        //    var page = await client.GetAsync(url);
+        //    var pageSize = page.Content.Headers.ContentLength.Value;
+        //    return Observable.Return<long>(pageSize);
+        //    return Task.CompletedTask;
+        //}
 
         public IActionResult Privacy()
         {
