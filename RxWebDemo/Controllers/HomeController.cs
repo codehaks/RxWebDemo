@@ -20,7 +20,7 @@ namespace RxWebDemo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IHubContext<NotifyHub, INotifyHub> _notifyHub;
+        //private readonly IHubContext<NotifyHub, INotifyHub> _notifyHub;
 
         public HomeController(ILogger<HomeController> logger)
         {

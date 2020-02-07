@@ -29,20 +29,21 @@
             el: "#app",
             data: {
                 url: "https://google.com",
-                links: []
+                links: [],
+                connection:null
             },
             
             mounted: function () {
                 var vm = this;
 
                 vm.connection = new signalR.HubConnectionBuilder()
-                    .withUrl('/notifyhubHub')
+                    .withUrl('/notifyhub')
                     .configureLogging(signalR.LogLevel.Information)
                     .build();
 
                 vm.connection.start()
                     .catch(function (err) {
-                        return console.error(err.toSting());
+                        return console.error(err.toString());
                     });
 
                 vm.connection.on('updateUrl', function (index, size) {
@@ -65,25 +66,36 @@
                     var vm = this;
 
                     var model = {
-                        url: vm.url
+                        url: vm.url,
+                        size:0
                     }
 
-                    $.ajax({ url: "/api/shot", data: model, method: "POST" })
-                        .done(function (pageSize) {
-                            var newLink = {
-                                url: model.url,
-                                size: pageSize
-                            };
+                    vm.links.push(model);
 
-                            vm.links.splice(0, 0, newLink);
-
-
-                            //toastr.success("Bug updated.");
-                        }).fail(function () {
-                            // toastr.error("Can not update this bug.");
-                        }).always(function () {
-                            // vm.clearData();
+                    vm.connection.invoke("UpdateUrl", vm.links.length - 1, vm.url)
+                        .then(function (index,size) {
+                            vm.links[index].size = size;
+                        })
+                        .catch(function (err) {
+                            //return console.error(err.toString());
                         });
+
+                    //$.ajax({ url: "/api/shot", data: model, method: "POST" })
+                    //    .done(function (pageSize) {
+                    //        var newLink = {
+                    //            url: model.url,
+                    //            size: pageSize
+                    //        };
+
+                    //        vm.links.splice(0, 0, newLink);
+
+
+                    //        //toastr.success("Bug updated.");
+                    //    }).fail(function () {
+                    //        // toastr.error("Can not update this bug.");
+                    //    }).always(function () {
+                    //        // vm.clearData();
+                    //    });
                 }
             }
         });
