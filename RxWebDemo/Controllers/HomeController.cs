@@ -5,11 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using RxWebDemo.Hubs;
 using RxWebDemo.Models;
 
 namespace RxWebDemo.Controllers
@@ -17,6 +20,7 @@ namespace RxWebDemo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHubContext<NotifyHub, INotifyHub> _notifyHub;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -28,27 +32,56 @@ namespace RxWebDemo.Controllers
             return View();
         }
 
-        [HttpPost]
-        [Route("api/check")]
-        public async Task<IActionResult> Check(string url, [FromServices] IWebHostEnvironment env)
-        {
-            _logger.LogInformation(url);
+        //[HttpPost]
+        //[Route("api/check")]
+        //public async Task<IActionResult> Check(string url, [FromServices] IWebHostEnvironment env)
+        //{
+        //    _logger.LogInformation(url);
 
-          
+        //    var size = Observable.Return<long>(0);
 
-            if (url.Contains("google")) 
-            {
-                await Task.Delay(10000);
-            }
+        //    var b =  Subject.Create<long>();
 
-            return Ok();
-        }
+
+        //    size.Select(async _ =>
+        //    {
+        //        var client = new HttpClient();
+        //        var page = await client.GetAsync(url);
+        //        var pageSize = page.Content.Headers.ContentLength.Value;
+        //        return pageSize;
+        //    }).Subscribe();           
+
+
+
+        //    size.Subscribe(async _ =>
+        //    {
+        //        var client = new HttpClient();
+        //        var page = await client.GetAsync(url);
+        //        var pageSize = page.Content.Headers.ContentLength.Value;
+        //        size.Next();
+        //    },
+        //    async () =>
+        //    {
+        //        await _notifyHub.Clients.All.SendUpdateUrl(0, 0);
+        //    }
+        //    );
+
+
+
+
+        //    if (url.Contains("google"))
+        //    {
+        //        await Task.Delay(10000);
+        //    }
+
+        //    return Ok();
+        //}
 
         //public static async IObservable<long> GetPageSize(string url)
         //{
         //    var client = new HttpClient();
-            
-            
+
+
         //    var page = await client.GetAsync(url);
         //    var pageSize = page.Content.Headers.ContentLength.Value;
         //    return Observable.Return<long>(pageSize);
